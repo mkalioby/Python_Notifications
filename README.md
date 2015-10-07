@@ -12,6 +12,7 @@ This is a simple python library that can send notification to Android Phone usin
       
 2. Download and install the [Android APK](https://github.com/mkalioby/Python_Notifications/blob/master/Applications/Android/Notifier.apk) to your phone.
 3. Open Application and enter topics to listen on (seprated by ,) e.g warning,mkalioby.
+	![Android Image](https://github.com/mkalioby/Python_Notifications/blob/master/Applications/Android/img.png)
 4. in your python code, write 
 ```python
         import pushNotification
