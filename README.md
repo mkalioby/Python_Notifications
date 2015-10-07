@@ -14,6 +14,7 @@ This is a simple python library that can send notification to Android Phone usin
         pushNotification.push(MESSAGE,TOPIC)
 ```
 The return is a JSON String.
+
 Finally, check your phone.
 
 ###  Next Features:
