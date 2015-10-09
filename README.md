@@ -25,7 +25,7 @@ Follow the wizard [here](https://developers.google.com/mobile/add?platform=andro
 4. in your python code, write 
 ```python
         import pushNotification
-        pushNotification.push(MESSAGE,TOPIC)
+        pushNotification.push(MESSAGE,TOPIC,CUSTOM_API_KEY="")
 ```
 The return is a JSON String.
 
