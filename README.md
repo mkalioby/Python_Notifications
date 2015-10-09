@@ -32,6 +32,5 @@ The return is a JSON String.
 Finally, check your phone.
 
 ###  Next Features:
-1. Allow each to use this account and credentials.
 3. iOS support. 
 	
