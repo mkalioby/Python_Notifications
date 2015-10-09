@@ -28,9 +28,28 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+
 import gcm.play.android.samples.com.gcm.R;
 
 public class MyGcmListenerService extends GcmListenerService {
+
+    public String readFile(String filename) throws FileNotFoundException,IOException
+    {
+        FileInputStream in = openFileInput(filename);
+        InputStreamReader inputStreamReader = new InputStreamReader(in);
+        byte[] data = new byte[in.available()];
+        in.read(data, 0, in.available());
+        in.close();
+        return new String(data, "UTF-8");
+
+    }
+    public static Uri defaultSoundUri;
+
 
     private static final String TAG = "MyGcmListenerService";
 
@@ -47,7 +66,6 @@ public class MyGcmListenerService extends GcmListenerService {
         String message = data.getString("message");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
-
         if (from.startsWith("/topics/")) {
             // message received from some topic.
         } else {
@@ -77,12 +95,21 @@ public class MyGcmListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String message) {
+        try
+        {
+            defaultSoundUri= Uri.parse(readFile("ringtone.txt"));
+        }
+        catch (Exception exp)
+        {
+            defaultSoundUri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        }
+
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
                 .setContentTitle("Notifier")
