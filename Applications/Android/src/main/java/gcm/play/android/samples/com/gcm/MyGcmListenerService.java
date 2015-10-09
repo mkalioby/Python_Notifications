@@ -30,9 +30,12 @@ import com.google.android.gms.gcm.GcmListenerService;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import gcm.play.android.samples.com.gcm.R;
 
@@ -64,9 +67,12 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
+        String topic="";
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
         if (from.startsWith("/topics/")) {
+            topic=from.split("/")[from.split("/").length-1];
+            message=topic+": "+message;
             // message received from some topic.
         } else {
             // normal downstream message.
@@ -84,6 +90,7 @@ public class MyGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
+        saveNotification(message);
         sendNotification(message);
         // [END_EXCLUDE]
     }
@@ -94,6 +101,24 @@ public class MyGcmListenerService extends GcmListenerService {
      *
      * @param message GCM message received.
      */
+    public static String getCurrentTimeStamp() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        return strDate;
+    }
+    private void saveNotification(String message)
+    {
+        try {
+            FileOutputStream fos = openFileOutput("history.txt", Context.MODE_APPEND);
+            fos.write((getCurrentTimeStamp() + "    " + message + "\n").getBytes());
+            fos.close();
+        }
+        catch (Exception exp)
+        {
+
+        }
+    }
     private void sendNotification(String message) {
         try
         {

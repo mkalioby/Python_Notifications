@@ -1,6 +1,8 @@
 package gcm.play.android.samples.com.gcm;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -8,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmPubSub;
@@ -22,7 +25,9 @@ import gcm.play.android.samples.com.gcm.R;
 
 public class Topics extends AppCompatActivity {
     Intent intent;
-
+    EditText senderIDEditText;
+    EditText topicsEditText;
+    TextView historyView;
     public String readFile(String filename) throws FileNotFoundException,IOException
     {
         FileInputStream in = openFileInput(filename);
@@ -39,16 +44,21 @@ public class Topics extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topics);
         EditText topicsEditText = (EditText) findViewById(R.id.topicEditText);
+        historyView= (TextView) findViewById(R.id.history);
+        senderIDEditText=(EditText)findViewById(R.id.senderID);
         try {
             topicsEditText.setText(readFile("topics.txt"));
             MyGcmListenerService.defaultSoundUri=Uri.parse(readFile("ringtone.txt"));
-/*
-            in = openFileInput("clientID.txt");
-            inputStreamReader = new InputStreamReader(in);
-            data = new byte[in.available()];
-            in.read(data, 0, in.available());
-            topicsEditText.setText(new String(data, "UTF-8"));
-            in.close();*/
+            senderIDEditText.setText(readFile("senderID.txt"));
+            /*String[] hist=readFile("history.txt").split("\n");
+            StringBuilder histText=new StringBuilder();
+            for (int j=hist.length-1;j<0;j--)
+            {
+                histText.append(hist[j]+"\n");
+            }
+            historyView.setText(histText.toString());
+*/
+            historyView.setText(readFile("history.txt"));
         } catch (Exception exp) {
             Toast.makeText(getApplicationContext(), "Failed to open: " + exp.getMessage(), 5).show();
 
@@ -66,18 +76,38 @@ public class Topics extends AppCompatActivity {
 
     }
 
-    public void register(View view) {
-        EditText topicsEditText = (EditText) findViewById(R.id.topicEditText);
-        //EditText clientID= (EditText) findViewById(R.id.clientID);
+    public void checkSenderID()
+    {
+        if (senderIDEditText.getText().toString().length()<10) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage("You have to enter a sender ID")
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+        else
+            register2();
+    }
+
+    public void register(View view) {
+        topicsEditText = (EditText) findViewById(R.id.topicEditText);
+        senderIDEditText = (EditText) findViewById(R.id.senderID);
+        checkSenderID();
+    }
+    public  void register2()
+    {
         String[] topics = topicsEditText.getText().toString().split(",");
-        //RegistrationIntentService.ClientID=clientID.getText().toString();
         RegistrationIntentService.setTopics(topics, true);
+        String senderID=senderIDEditText.getText().toString();
+        RegistrationIntentService.senderID=senderID;
         try {
             writeFile("topics.txt", topicsEditText.getText().toString());
-            /*fos = openFileOutput("clientID.txt", Context.MODE_PRIVATE);
-            fos.write(clientID.getText().toString().getBytes());
-            fos.close();*/
+            writeFile("senderID.txt",senderID);
 
             Toast.makeText(getApplicationContext(), "Saved Successfully", 5).show();
             Intent intent = new Intent(this, MainActivity.class);
@@ -110,7 +140,7 @@ public class Topics extends AppCompatActivity {
     public void changeTone(View view)
     {
         intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, MyGcmListenerService.defaultSoundUri);
         startActivityForResult(intent, 0);
     }
@@ -132,5 +162,20 @@ public class Topics extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void clearHist(View view)
+    {
+        try{
+            writeFile("history.txt","");
+            historyView= (TextView) findViewById(R.id.history);
+
+            historyView.setText(readFile("history.txt"));
+        }
+        catch (Exception exp)
+        {
+
+        }
+
     }
 }

@@ -1,8 +1,29 @@
 #! /usr/bin/python
+import ConfigParser,os
 import simplejson,sys,urllib2,urllib
-API_KEY="AIzaSyCxY6hx9Zx_0u_ANv8x6wf-e-zAEj1W_78"
 
-def push(msg,topic):
+class NoAPIKey(Exception):
+	def __init__(self, message):
+		self.message = message
+
+def getAPIKey():
+	config = ConfigParser.RawConfigParser()
+	if os.path.exists(os.path.expanduser("~/.pushNotification.cfg")):
+		config.read(os.path.expanduser("~/.pushNotification.cfg"))
+	else:
+		if os.path.exists("/etc/pushNotification.cfg"):
+			config.read("/etc/pushNotification.cfg")
+		else:
+			return ""
+	return config.get("API","key")
+
+API_KEY=getAPIKey()
+
+def push(msg,topic,CUSTOM_API_KEY=""):
+	if CUSTOM_API_KEY!="":
+		API_KEY=CUSTOM_API_KEY
+	if API_KEY=="":
+		raise NoAPIKey("You have to set the API KEY at /etc/pushNotification.cfg or ~/.pushNotification.cfg")
 	jGcmData={}
 	jData={}
 	jData["message"]= msg

@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),mode,2);
         mRegistrationProgressBar = (ProgressBar) findViewById(R.id.registrationProgressBar);
         mInformationTextView = (TextView) findViewById(R.id.informationTextView);
+        if (mode == null) {
+            startActivity(new Intent(this, Topics.class));
+            return;
+        }
         if (mode.equals("register")) {
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override

@@ -28,8 +28,11 @@ import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class RegistrationIntentService extends IntentService {
 
@@ -37,6 +40,7 @@ public class RegistrationIntentService extends IntentService {
     private static final String TAG = "UnRegIntentService";
     private static String[] TOPICS = {"global"};
     public static String token="";
+    public static String senderID="";
     public static void setTopics(String[] topics,boolean addGlobal)
     {
         /*if (addGlobal) {
@@ -58,6 +62,16 @@ public class RegistrationIntentService extends IntentService {
     public RegistrationIntentService() {
         super(TAG);
     }
+    public String readFile(String filename) throws FileNotFoundException,IOException
+    {
+        FileInputStream in = openFileInput(filename);
+        InputStreamReader inputStreamReader = new InputStreamReader(in);
+        byte[] data = new byte[in.available()];
+        in.read(data, 0, in.available());
+        in.close();
+        return new String(data, "UTF-8");
+
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -68,8 +82,12 @@ public class RegistrationIntentService extends IntentService {
             // Initially this call goes out to the network to retrieve the token, subsequent calls
             // are local.
             // [START get_token]
+            if (senderID.equals(""))
+            {
+                senderID=readFile("senderID.txt");
+            }
             InstanceID instanceID = InstanceID.getInstance(this);
-            String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+            String token = instanceID.getToken(senderID,
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
