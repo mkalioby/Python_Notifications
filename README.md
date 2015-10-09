@@ -24,6 +24,5 @@ Finally, check your phone.
 
 ###  Next Features:
 1. Allow each to use this account and credentials.
-2. Changing Ringtone.
 3. iOS support. 
 	
