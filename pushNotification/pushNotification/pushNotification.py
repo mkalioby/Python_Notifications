@@ -17,9 +17,9 @@ def getAPIKey():
 			return ""
 	return config.get("API","key")
 
-API_KEY=getAPIKey()
 
 def push(msg,topic,CUSTOM_API_KEY=""):
+	API_KEY=getAPIKey()
 	if CUSTOM_API_KEY!="":
 		API_KEY=CUSTOM_API_KEY
 	if API_KEY=="":
