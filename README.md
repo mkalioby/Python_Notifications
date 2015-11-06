@@ -1,5 +1,7 @@
 This is a simple python library that can send notification to Android Phone using Google Cloud Messaging (GCM).
 
+It supports both Python 2.5+ and Python 3.4
+
 ### Get Sender ID and API Key 
 
 Follow the wizard [here](https://developers.google.com/mobile/add?platform=android&cntapi=gcm&cntapp=Default%20Demo%20App&cntpkg=gcm.play.android.samples.com.gcmquickstart&cnturl=https:%2F%2Fdevelopers.google.com%2Fcloud-messaging%2Fandroid%2Fstart%3Fconfigured%3Dtrue&cntlbl=Continue%20Try%20Cloud%20Messaging)
@@ -17,7 +19,7 @@ Follow the wizard [here](https://developers.google.com/mobile/add?platform=andro
       ```
       OR
       
-      ```  sudo pip install pushNotification ```
+      ```  sudo pip install future simplejson pushNotification ```
       
 2. Download and install the [Android APK](https://github.com/mkalioby/Python_Notifications/blob/master/Applications/Android/Notifier.apk?raw=true) to your phone.
 3. Open Application and enter topics to listen on (seprated by ,) e.g warning,mkalioby.
