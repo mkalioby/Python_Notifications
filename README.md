@@ -1,6 +1,6 @@
 This is a simple python library that can send notification to Android Phone using Google Cloud Messaging (GCM).
 
-It supports both Python 2.5+ and Python 3.4
+It supports both Python 2.5+ and Python 3.4+
 
 ### Get Sender ID and API Key 
 
