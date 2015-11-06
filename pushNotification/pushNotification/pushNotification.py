@@ -6,8 +6,14 @@ try:
 except:
 	import configparser as ConfigParser
 import os
-import simplejson,sys,urllib2,urllib
+import simplejson,sys
+from future.standard_library import install_aliases
+install_aliases()
 
+from urllib.parse import urlparse, urlencode
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError
+import urllib
 class NoAPIKey(Exception):
 	def __init__(self, message):
 		self.message = message
@@ -38,10 +44,16 @@ def push(msg,topic,CUSTOM_API_KEY=""):
 	jGcmData["data"]= jData
 	data=simplejson.dumps(jGcmData)
 
-	req=urllib2.Request("https://android.googleapis.com/gcm/send",data)
+	req=Request("http://android.googleapis.com/gcm/send",data)
 	req.add_header("Authorization","key=" + API_KEY)
 	req.add_header("Content-Type", "application/json");
-	response = urllib2.urlopen(req)
+	try:
+		response = urlopen(req)
+	except:
+		req=Request("https://android.googleapis.com/gcm/send",data.encode('utf8'))
+		req.add_header("Authorization","key=" + API_KEY)
+		req.add_header("Content-Type", "application/json");
+		response= urllib.request.urlopen(req)
 	return  response.read()
 
 if __name__=="__main__":
