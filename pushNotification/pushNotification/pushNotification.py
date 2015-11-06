@@ -1,5 +1,11 @@
 #! /usr/bin/python
-import ConfigParser,os
+
+from __future__ import print_function
+try:
+	import ConfigParser
+except:
+	import configparser as ConfigParser
+import os
 import simplejson,sys,urllib2,urllib
 
 class NoAPIKey(Exception):
@@ -40,11 +46,11 @@ def push(msg,topic,CUSTOM_API_KEY=""):
 
 if __name__=="__main__":
 	if sys.argv[1]=="--help" or sys.argv[1]=="-h":
-		print """This script sends notifications to Android Phones.
+		print ("""This script sends notifications to Android Phones.
 python pushNotification msg topic
-"""
+""")
 		exit(0)
 	msg=sys.argv[1]
 	topic=sys.argv[2]
-	print push(msg,topic)
-	print "Check your device/emulator for notification."
+	print (push(msg,topic))
+	print ("Check your device/emulator for notification.")
